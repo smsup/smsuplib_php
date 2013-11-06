@@ -2,7 +2,7 @@
 
 require 'lib/smsuplib.php';
 
-$s = new smsuplib('5035dbe7e58670270df2717793335fd7','4899c19458b5b3b5c1d1562697366b43');
+$s = new smsuplib('TU_ID_USUARIO','TU_CLAVE_SECRETA');
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST'){
 	if($_POST['ord']=='envio'){
