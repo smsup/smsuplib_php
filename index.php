@@ -9,7 +9,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST'){
 		$texto = $_POST['texto'];
 		$numeros = array($_POST['tel']);
 		$referencia = $_POST['ref'];
-		var_dump($s->NuevoSMS($texto,$numeros,'', $referencia));
+		$remitente = (array_key_exists('remit', $_POST))?$_POST['remit']:'';
+		var_dump($s->NuevoSMS($texto,$numeros,'', $referencia, $remitente));
 	}else if($_POST['ord']=='eliminar'){
 		var_dump($s->EliminarSMS($_POST['id']));
 	}else if($_POST['ord']=='estado'){
@@ -32,6 +33,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST'){
 	<input type="text" name="tel" />
 	<br>Referencia:<br>
 	<input type="text" name="ref" />
+	<br>Remitente:<br>
+	<input type="text" name="remit" />
 	<br>
 	<input type="submit" value="Enviar sms" />
 </form>

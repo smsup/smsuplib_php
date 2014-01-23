@@ -16,9 +16,9 @@ class smsuplib {
 		$this->clave = $clave;
 	}
 
-	public function NuevoSMS($texto, Array $numeros, $fechaenvio='', $referencia=''){
+	public function NuevoSMS($texto, Array $numeros, $fechaenvio='', $referencia='', $remitente=''){
 		$post = json_encode(array('texto'=>$texto, 'fecha' => (($fechaenvio=='')?'NOW':$fechaenvio->format('c')),
-			'telefonos' => $numeros, 'referencia'=>$referencia));
+			'telefonos' => $numeros, 'referencia'=>$referencia, 'remitente'=> $remitente));
 		$cabeceras = $this->generarCabeceras('POST', self::URLsms, $post);
 		return $this->enviar(self::URLsms, 'POST', $cabeceras, $post);
 	}
