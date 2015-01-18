@@ -3,23 +3,25 @@
 require 'src/smsup/smsuplib.php';
 
 $s = new smsup\smsuplib('TU_ID_USUARIO','TU_CLAVE_SECRETA');
-
+$resul = '';
 if ($_SERVER['REQUEST_METHOD'] == 'POST'){
 	if($_POST['ord']=='envio'){
 		$texto = $_POST['texto'];
 		$numeros = array($_POST['tel']);
 		$referencia = $_POST['ref'];
 		$remitente = (array_key_exists('remit', $_POST))?$_POST['remit']:'';
-		var_dump($s->NuevoSMS($texto,$numeros,'', $referencia, $remitente));
+		$resul = json_encode($s->NuevoSMS($texto,$numeros,'', $referencia, $remitente), JSON_PRETTY_PRINT);
 	}else if($_POST['ord']=='eliminar'){
-		var_dump($s->EliminarSMS($_POST['id']));
+		$resul = json_encode($s->EliminarSMS($_POST['id']), JSON_PRETTY_PRINT);
 	}else if($_POST['ord']=='estado'){
-		var_dump($s->EstadoSMS($_POST['id']));
+		$resul = json_encode($s->EstadoSMS($_POST['id']), JSON_PRETTY_PRINT);
 	}else if($_POST['ord']=='creditos'){
-		var_dump($s->CreditosDisponibles());
+		$resul = json_encode($s->CreditosDisponibles(), JSON_PRETTY_PRINT);
 	}else if($_POST['ord']=='resultado'){
-		var_dump($s->ResultadoPeticion($_POST['ref']));
+		$resul = json_encode($s->ResultadoPeticion($_POST['ref']), JSON_PRETTY_PRINT);
 	}
+
+	echo '<pre>'.$resul.'</pre>';
 }
 
 ?>

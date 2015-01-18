@@ -5,9 +5,9 @@ namespace smsup;
 class smsuplib {
 
 	const HOST = 'https://www.smsup.es';
-	const URLsms = '/api/sms/';
-	const URLcreditos = '/api/creditos/';
-	const URLenvio = '/api/peticion/';
+	const URL_SMS = '/api/sms/';
+	const URL_CREDITOS = '/api/creditos/';
+	const URL_ENVIO = '/api/peticion/';
 
 	protected $usuario = '';
 	protected $clave = '';
@@ -17,32 +17,33 @@ class smsuplib {
 		$this->clave = $clave;
 	}
 
-	public function NuevoSMS($texto, Array $numeros, $fechaenvio='', $referencia='', $remitente=''){
-		$post = json_encode(array('texto'=>$texto, 'fecha' => (($fechaenvio=='')?'NOW':$fechaenvio->format('c')),
+	public function NuevoSMS($texto, Array $numeros, $fechaenvio=null, $referencia='', $remitente=''){
+		$fechac = (($fechaenvio===null || !is_object($fechaenvio))?'NOW':$fechaenvio->format('c'));
+		$post = json_encode(array('texto'=>$texto, 'fecha' => $fechac,
 			'telefonos' => $numeros, 'referencia'=>$referencia, 'remitente'=> $remitente));
-		$cabeceras = $this->generarCabeceras('POST', self::URLsms, $post);
-		return $this->enviar(self::URLsms, 'POST', $cabeceras, $post);
+		$cabeceras = $this->generarCabeceras('POST', self::URL_SMS, $post);
+		return $this->enviar(self::URL_SMS, 'POST', $cabeceras, $post);
 	}
 
 	public function EliminarSMS($idsms){
-		$url = self::URLsms.$idsms.'/';
+		$url = self::URL_SMS.$idsms.'/';
 		$cabeceras = $this->generarCabeceras('DELETE', $url);
 		return $this->enviar($url, 'DELETE', $cabeceras);
 	}
 
 	public function EstadoSMS($idsms){
-		$url = self::URLsms.$idsms.'/';
+		$url = self::URL_SMS.$idsms.'/';
 		$cabeceras = $this->generarCabeceras('GET', $url);
 		return $this->enviar($url, 'GET', $cabeceras);
 	}
 
 	public function CreditosDisponibles(){
-		$cabeceras = $this->generarCabeceras('GET', self::URLcreditos);
-		return $this->enviar(self::URLcreditos, 'GET', $cabeceras);
+		$cabeceras = $this->generarCabeceras('GET', self::URL_CREDITOS);
+		return $this->enviar(self::URL_CREDITOS, 'GET', $cabeceras);
 	}
 
 	public function ResultadoPeticion($referencia){
-		$url = self::URLenvio.$referencia.'/';
+		$url = self::URL_ENVIO.$referencia.'/';
 		$cabeceras = $this->generarCabeceras('GET', $url);
 		return $this->enviar($url, 'GET', $cabeceras);
 	}
@@ -69,20 +70,20 @@ class smsuplib {
 			curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "DELETE");
 		}
 		curl_setopt($ch, CURLOPT_HTTPHEADER, array_values($cabeceras));
-		if($body != null) {
+		if($body !== null) {
 			curl_setopt($ch, CURLOPT_POSTFIELDS, $body);
 		}
 		curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
 		$data = curl_exec($ch);
 		if (curl_errno($ch)) {
-			throw new Exception($ch);
+			throw new \Exception($ch);
 		} else {
 			$statusCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
 		}
 		curl_close($ch);
-		if ($data != false) {
+		if ($data) {
 			$result = json_decode($data,true);
-			if ($result != null) {
+			if ($result !== false) {
 				return array('httpcode'=>$statusCode, 'resultado' => $result);
 			}
 		}
