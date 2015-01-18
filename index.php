@@ -1,8 +1,8 @@
 <?php
 
-require 'lib/smsuplib.php';
+require 'src/smsup/smsuplib.php';
 
-$s = new smsuplib('TU_ID_USUARIO','TU_CLAVE_SECRETA');
+$s = new smsup\smsuplib('TU_ID_USUARIO','TU_CLAVE_SECRETA');
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST'){
 	if($_POST['ord']=='envio'){
