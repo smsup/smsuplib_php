@@ -76,7 +76,7 @@ class smsuplib {
 		curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
 		$data = curl_exec($ch);
 		if (curl_errno($ch)) {
-			throw new \Exception($ch);
+			throw new \Exception(curl_error($ch));
 		} else {
 			$statusCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
 		}
